@@ -1,0 +1,21 @@
+#!/bin/bash
+# postinst script for ipseity
+# Copyright 2013 Pieter Sartain
+set -e
+
+## Ipseity
+# We want this to run on port 80, so ensure the default nginx site is removed
+if [ -e /etc/nginx/sites-enabled/default ] ; then
+	rm /etc/nginx/sites-enabled/default
+fi
+# Configure daemons to start automatically
+update-rc.d ipseity defaults
+update-rc.d nfcdaemon defaults
+
+# And start daemons
+service ipseity start
+service nfcdaemon start
+
+## Initialise database
+export PYTHONPATH="/usr/share"
+python -c 'from ipseity import db_helpers;db_helpers.init_db()'

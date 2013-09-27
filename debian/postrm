@@ -1,0 +1,9 @@
+#!/bin/bash
+# postrm script for ipseity
+# Copyright 2013 Pieter Sartain
+set -e
+
+# Stop daemons from starting automatically
+update-rc.d -f ipseity remove
+update-rc.d -f nfcdaemon remove
+

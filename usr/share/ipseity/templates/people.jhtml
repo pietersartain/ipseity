@@ -1,0 +1,13 @@
+{% extends "index.jhtml" %}
+{% block title %}People{% endblock %}
+{% block head %}
+  {{ super() }}
+{% endblock %}
+{% block content %}
+
+<h1>People</h1>
+<div id="content">
+  {% include "peoplelist.jhtml" %}
+</div>
+
+{% endblock %}

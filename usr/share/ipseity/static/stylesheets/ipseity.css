@@ -1,0 +1,169 @@
+@import url(http://fonts.googleapis.com/css?family=Quattrocento+Sans|Merriweather+Sans);
+@import url(https://github.com/necolas/normalize.css/raw/master/normalize.css);
+/*
+ * Designed using the mobile-first responsive design
+ * pattern, based on the responsive media query breaks
+ * found in 320andup.
+ * http://stuffandnonsense.co.uk/projects/320andup/
+ *
+ * This only works if the following are set in the <head> of the html:
+ * <meta name="HandheldFriendly" content="True">
+ * <meta name="MobileOptimized" content="320"/>
+ * <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ *
+ * @author Pieter E Sartain
+ * @date   20130907
+ */
+/* This is a kinda imaginary min-width mediaquery
+ * Having this set up like this means that by default,
+ * sizes that we haven't specified will get at least
+ * the mobile view.
+ */
+/* @media only screen and (min-width : 320px) */
+/* line 51, ../sass/ipseity.scss */
+h1, h2, h3 {
+  font-family: 'Merriweather Sans', sans-serif;
+  margin: 0.67em;
+}
+
+/* line 56, ../sass/ipseity.scss */
+body {
+  background-color: #f6f6ee;
+  font-family: 'Quattrocento Sans', sans-serif;
+  margin: 0px;
+}
+/* line 61, ../sass/ipseity.scss */
+body a {
+  text-decoration: none;
+  padding: 5px 12px;
+  color: white;
+  border: 1px solid #fff;
+}
+/* line 66, ../sass/ipseity.scss */
+body a:hover {
+  border: 1px solid gray;
+}
+/* line 72, ../sass/ipseity.scss */
+body nav {
+  background: #383838;
+}
+/* line 75, ../sass/ipseity.scss */
+body nav li {
+  list-style-type: none;
+  margin-right: 0.5em;
+}
+/* line 80, ../sass/ipseity.scss */
+body nav ul {
+  margin: 0px;
+  padding: 8px;
+}
+/* line 83, ../sass/ipseity.scss */
+body nav ul li {
+  display: inline-block;
+}
+/* line 88, ../sass/ipseity.scss */
+body nav > li {
+  position: absolute;
+  top: 8px;
+  right: 0px;
+}
+/* line 94, ../sass/ipseity.scss */
+body nav a {
+  background: #484848;
+  border: 1px solid #484848;
+}
+/* line 97, ../sass/ipseity.scss */
+body nav a:hover {
+  background: #686868;
+}
+/* line 105, ../sass/ipseity.scss */
+body > div#content > div {
+  border: 1px solid #d8d8d8;
+  background-color: white;
+  padding: 5px;
+  margin: 5px;
+  -moz-border-radius: 2px;
+  -webkit-border-radius: 2px;
+  border-radius: 2px;
+  position: relative;
+  min-height: 75px;
+}
+/* line 114, ../sass/ipseity.scss */
+body > div#content > div img {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+}
+/* line 120, ../sass/ipseity.scss */
+body > div#content > div h2 {
+  margin: 0 0 0 90px;
+}
+/* line 124, ../sass/ipseity.scss */
+body > div#content > div a.delete {
+  position: absolute;
+  top: 64px;
+}
+/* line 129, ../sass/ipseity.scss */
+body > div#content > div a.delete, body > div#content > div a.unlink {
+  background: #eab7b7;
+  border: 1px solid #eab7b7;
+}
+/* line 132, ../sass/ipseity.scss */
+body > div#content > div a.delete:hover, body > div#content > div a.unlink:hover {
+  background: #dc8c8c;
+  border: 1px solid gray;
+}
+/* line 138, ../sass/ipseity.scss */
+body > div#content > div a.link {
+  background: #a9d49f;
+  border: 1px solid #a9d49f;
+}
+/* line 141, ../sass/ipseity.scss */
+body > div#content > div a.link:hover {
+  background: #53a93f;
+  border: 1px solid gray;
+}
+/* line 147, ../sass/ipseity.scss */
+body > div#content > div ul {
+  list-style-type: none;
+  margin-left: 90px;
+}
+/* line 150, ../sass/ipseity.scss */
+body > div#content > div ul li {
+  margin: 12px 8px 12px 0px;
+}
+
+/* line 158, ../sass/ipseity.scss */
+div.logged_out {
+  color: #d0d0d0;
+}
+/* line 160, ../sass/ipseity.scss */
+div.logged_out img {
+  opacity: 0.3;
+}
+
+/* line 165, ../sass/ipseity.scss */
+div#add-new-person {
+  background-color: #f5f5f5;
+}
+/* line 167, ../sass/ipseity.scss */
+div#add-new-person * {
+  margin-left: 0px;
+}
+
+@media only screen and (min-width : 768px) {
+  /* Styles */
+  /* line 175, ../sass/ipseity.scss */
+  body > div#content > div {
+    width: 47%;
+    float: left;
+  }
+}
+@media only screen and (min-width : 1382px) {
+  /* Styles */
+  /* line 183, ../sass/ipseity.scss */
+  body > div#content > div {
+    width: 31%;
+    float: left;
+  }
+}

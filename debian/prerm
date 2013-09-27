@@ -1,0 +1,8 @@
+#!/bin/bash
+# prerm script for ipseity
+# Copyright 2013 Pieter Sartain
+
+## CloudView
+# Stop daemons now
+service ipseity stop
+service nfcdaemon stop

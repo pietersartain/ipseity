@@ -1,0 +1,187 @@
+/*
+ * Designed using the mobile-first responsive design
+ * pattern, based on the responsive media query breaks
+ * found in 320andup.
+ * http://stuffandnonsense.co.uk/projects/320andup/
+ *
+ * This only works if the following are set in the <head> of the html:
+ * <meta name="HandheldFriendly" content="True">
+ * <meta name="MobileOptimized" content="320"/>
+ * <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ *
+ * @author Pieter E Sartain
+ * @date   20130907
+ */
+
+/* This is a kinda imaginary min-width mediaquery
+ * Having this set up like this means that by default,
+ * sizes that we haven't specified will get at least
+ * the mobile view.
+ */
+/* @media only screen and (min-width : 320px) */
+
+@import url(http://fonts.googleapis.com/css?family=Quattrocento+Sans|Merriweather+Sans);
+@import url(https://github.com/necolas/normalize.css/raw/master/normalize.css);
+
+@mixin corners ($radius: 5px) {
+  -moz-border-radius: $radius;
+  -webkit-border-radius: $radius;
+  border-radius: $radius;
+}
+
+//$page-background: #E5E5E5; // Google
+$page-background: #F6F6EE;
+$card-border: #D8D8D8;
+$card-background: #FFFFFF;
+$add-background: #F5F5F5;
+$green-bg: #53A93F;
+$red-bg: #dc8c8c;
+
+$default-link-color: #FFF;
+$default-link-hover: gray;
+
+$logged-out-text: #D0D0D0;
+$logged-out-green-bg: #A9D49F;
+$logged-out-red-bg: #eab7b7;
+
+$menu-background: #383838;
+$menu-link-bg: #484848;
+$menu-link-bg-hover: #686868;
+
+h1, h2, h3 {
+  font-family: 'Merriweather Sans', sans-serif;
+  margin: 0.67em;
+}
+
+body {
+  background-color: $page-background;
+  font-family: 'Quattrocento Sans', sans-serif;
+  margin: 0px;
+
+  a {
+    text-decoration: none;
+    padding: 5px 12px;
+    color: $default-link-color;
+    border: 1px solid #fff;
+    &:hover {
+      border: 1px solid $default-link-hover;
+    }
+  }
+
+
+  nav {
+    background: $menu-background;
+
+    li {
+      list-style-type: none;
+      margin-right: 0.5em;
+    }
+
+    ul {
+      margin: 0px;
+      padding: 8px;
+      li {
+        display: inline-block;
+      }
+    }
+
+    & > li {
+      position: absolute;
+      top: 8px;
+      right: 0px;
+    }
+
+    a {
+      background: $menu-link-bg;
+      border: 1px solid $menu-link-bg;
+      &:hover {
+        background: $menu-link-bg-hover;
+      }
+    }
+
+  }
+
+  // Cards
+  & > div#content > div {
+    border: 1px solid $card-border;
+    background-color: $card-background;
+    padding: 5px;
+    margin: 5px;
+    @include corners(2px);
+    position: relative;
+    min-height: 75px;
+
+    img {
+      position: absolute;
+      top: 5px;
+      left: 5px;
+    }
+
+    h2 {
+      margin: 0 0 0 90px;
+    }
+
+    a.delete {
+      position: absolute;
+      top: 64px;
+    }
+
+    a.delete, a.unlink {
+      background: $logged-out-red-bg;
+      border: 1px solid $logged-out-red-bg;
+      &:hover {
+        background: $red-bg;
+        border: 1px solid $default-link-hover;
+      }
+    }
+    
+    a.link {
+        background: $logged-out-green-bg;
+        border: 1px solid $logged-out-green-bg;
+      &:hover {
+        background: $green-bg;
+        border: 1px solid $default-link-hover;
+      }
+    }
+
+    ul {
+      list-style-type: none;
+      margin-left: 90px;
+      li {
+        margin: 12px 8px 12px 0px;
+      }
+    }
+
+  }
+}
+
+div.logged_out {
+  color: $logged-out-text;
+  img {
+    opacity: 0.3;
+  }
+}
+
+div#add-new-person {
+  background-color: $add-background;
+  * {
+    margin-left: 0px;
+  }
+}
+
+
+@media only screen and (min-width : 768px) {
+/* Styles */
+  body > div#content > div {
+    width: 47%;
+    float: left;
+  }
+}
+
+@media only screen and (min-width : 1382px) {
+/* Styles */
+  body > div#content > div {
+    width: 31%;
+    float: left;
+  }
+}

@@ -1,0 +1,31 @@
+#!/usr/bin/make -f
+
+## This package can be be built with dpkg-buildpackage -rfakeroot -b
+
+PACKAGE = $(firstword $(shell dh_listpackages))
+TMP = $(CURDIR)/debian/$(PACKAGE)
+COVERAGE_DIR = /coverage/coverage/$(PACKAGE)/$(shell \
+	dpkg-parsechangelog | grep 'Version: ' | sed 's/Version: //')
+
+%:
+#	DEBHELPER_NO_AUTOMATIC_CONFFILES is totally undocumented and requires one
+#	to provide one's own debian/conffiles file to make it run
+	DEBHELPER_NO_AUTOMATIC_CONFFILES="veryyes" dh $@
+
+override_dh_auto_install:
+	# Copies the root of this package into the debian tmp directory
+	# This is instead of running some kinda "make install"
+	find . -maxdepth 1 -not \( -name debian -o -name . -o -name t -o -name .git \) \
+		-exec echo Copy '{}' \; -exec cp -dR '{}' "$(TMP)"/ \;
+
+#override_dh_auto_test:
+#	perl Makefile.PL
+#	make test
+## Commented out as an aide memoire to how to create and store coverage in a
+## normal Smoothwall build environment.
+## Not currently required.
+#	HARNESS_PERL_SWITCHES=-MDevel::Cover make test
+#	if [ -d /coverage/ ]; then \
+#		mkdir -p $(COVERAGE_DIR); \
+#		cover -outputdir $(COVERAGE_DIR); \
+#	fi

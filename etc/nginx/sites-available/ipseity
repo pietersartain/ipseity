@@ -1,0 +1,9 @@
+server {
+  listen 80;
+
+  location / { try_files $uri @ipseity; }
+  location @ipseity {
+    include uwsgi_params;
+    uwsgi_pass unix:/tmp/ipseity;
+  }
+}

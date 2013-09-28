@@ -2,5 +2,6 @@
 <div class={% if person.logged_in %}'logged_in'{% else %}'logged_out'{% endif %} >
   <img src="{{ person.image_url }}" height="64" />
   <h2>{{ person.name }}</h2>
+  <h3>{{ person.event_when }}</h3>
 </div>
 {% endfor %}

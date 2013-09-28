@@ -67,17 +67,19 @@ class DBInterface:
 #    binprint.print_r(blockB)
 
     if (user_hash == blockB):
-      return True
+      return user_id
     else:
       return
 
-  def toggle_status(self, uuid):
-    user_info = self.query_db("SELECT user_id FROM cards WHERE card_uuid = ?", (uuid,), True)
-    if user_info is not None:
-      self.run_db("UPDATE users SET logged_in = 1 - logged_in WHERE user_id = ?", (user_info["user_id"],))
-      return True
-    else:
-      return False
+  def toggle_status(self, user_id):
+    user_info = self.query_db("SELECT * FROM users WHERE user_id = ?", (user_id,), True)
+    new_logged_in_state = 1 - user_info["logged_in"]
+
+    self.db.execute("UPDATE users SET logged_in = ? WHERE user_id = ?;", (new_logged_in_state, user_id,))
+    self.db.execute("INSERT INTO attendance(logged_in, user_id, event_when) VALUES(?, ?, strftime('%s','now'));", (new_logged_in_state, user_id))
+    self.db.commit()
+
+    return new_logged_in_state
 
   def update_card(self, card_id, user_id):
     self.run_db("UPDATE cards SET user_id = ? WHERE card_id = ?", (user_id, card_id))

@@ -21,6 +21,7 @@ USER=root
 UDS=/tmp/ipseity
 
 export PYTHONPATH="/usr/share"
+export TZ="GB"
 
 case "$1" in
   start)

@@ -1,6 +1,6 @@
 from ipseity import app
 from flask import render_template, request, url_for, redirect, send_file, make_response
-from ipseity import db_helpers
+from ipseity import db_helpers, people
 import sqlite3 # Binary
 import socket
 import traceback
@@ -10,67 +10,17 @@ import hashlib
 # Support functions
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-# Fill out a list of people with their card details, ready for
-# sending to the view.
-# This could mostly be done with a single SQL, but it's more hard work
-# than it needs to be, and this is plenty efficient enough for now.
-def get_full_people(user_records):
-  people_list = []
+# Convenience function for the view side of things
+def get_people(logged_in = None):
 
-  for user_record in user_records:
-    person_record = dict()
-    # person_record['details'] = user_record
+  if (logged_in == 1):
+    people_list = people.get_in()
 
-    card_records = db_helpers.query_db('select * from cards where user_id = ?',
-      (user_record['user_id'],) )
+  if (logged_in == 0):
+    people_list = people.get_out()
 
-    card_list = []
-    for card_record in card_records:
-      card_r = dict()
-      card_r['card_uuid'] = str(card_record['card_uuid']).encode('hex')
-      card_r['card_id'] = card_record['card_id']
-      card_list.append(card_r)
-
-    if ( len(str(user_record['image'])) > 0 ):
-      image_url = '/people/' + str(user_record['user_id']) + '/img'
-    else:
-      image_url = url_for('static', filename='img/icon-black.png')
-    
-    person_record = { \
-      'cards':card_list, \
-      'user_id':user_record['user_id'], \
-      'image_url':image_url, \
-      'name':user_record['name'], \
-      # 'cardcount':card_records['count'], \
-      'logged_in': (True if (user_record['logged_in'] == 1) else False) }
-
-    people_list.append(person_record)
-  return people_list
-
-# Now this function really does need optimising. omgooses.
-def get_people(sql):
-  user_records = db_helpers.query_db(sql)
-
-  people_list = []
-  for user_record in user_records:
-    person_record = dict()
-
-    if ( len(str(user_record['image'])) > 0 ):
-      image_url = '/people/' + str(user_record['user_id']) + '/img'
-    else:
-      image_url = url_for('static', filename='img/icon-black.png')
-
-    card_records = db_helpers.query_db('select count(*) as count from cards where user_id = ?',
-      (user_record['user_id'],), True )
-    
-    person_record = { \
-      'user_id':user_record['user_id'], \
-      'image_url':image_url, \
-      'name':user_record['name'], \
-      'cardcount':card_records['count'], \
-      'logged_in': (True if (user_record['logged_in'] == 1) else False) }
-
-    people_list.append(person_record)
+  if (logged_in == None):
+    people_list = people.get_all()
 
   if (request.args.get('ajax')):
     return render_template('peoplelist.jhtml', people=people_list)
@@ -93,24 +43,59 @@ def title():
 # Show all of the people
 @app.route("/people/all")
 def people_all():
-  return get_people('select * from users')
+  return get_people()
 
 # Show only the people who are currently logged in
 @app.route("/people/in")
 def people_in():
-  return get_people('select * from users where logged_in = 1')
+  return get_people(1)
 
 # Show only the people who are currently logged out
 @app.route("/people/out")
 def people_out():
-  return get_people('select * from users where logged_in = 0')
+  return get_people(0)
 
 # Show all of the people
 @app.route("/people/edit")
 def people_edit():
-  user_records = db_helpers.query_db('select * from users')
-  people = get_full_people(user_records)
-  return render_template('editpeople.jhtml', people=people)
+  people_list = people.get_full_people()
+  return render_template('editpeople.jhtml', people=people_list)
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# Report views
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+@app.route("/report/overview/<s_from>/<s_to>")
+def report_overview(s_from, s_to):
+# "SELECT col_b as clock_in, col_a as clock_out, strftime('%s', col_a)-strftime('%s', col_b) \
+#   FROM (  \
+#   SELECT q.user_id as user_id, q.event_when as col_a, \
+#     coalesce((select r.event_when from attendance as r \
+#                         where r.user_id = q.user_id \
+#                         and r.event_when < q.event_when \
+#                         order by r.event_when DESC limit 1), \
+#                         q.event_when) as col_b \
+#     FROM attendance as q WHERE q.user_id NOT NULL \
+#     ORDER BY q.user_id ASC, q.event_when ASC );"
+  #events = db_helpers.query_db("select event_when, u.name from attendance as a join users as u on u.user_id = a.user_id between ... and ...")
+
+  # Convert events array into:
+  #   per-person in, out, durations, number of visits, average duration
+  #   total duration in use, number of individual visits
+  #   average duration, average visits per user
+  #   most popular times, least popular times
+  #   time heat map of visits (or graph of usage by body count)
+  return ""
+
+# @app.route("/report/csv/<str:s_from>/<str:s_to>")
+# def report_csv(s_from, s_to):
+# SELECT u.name, a.logged_in, a.event_when, strftime('%s',event_when)
+# FROM attendance as a 
+# join users as u on u.user_id = a.user_id
+# WHERE a.event_when BETWEEN '2013-09-27 20:33:46' and '2013-09-27 20:33:49'
+# order by a.user_id desc, a.event_when asc;
+
+#AND strftime('%s', a.event_when) < strftime('%s','now')
 
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

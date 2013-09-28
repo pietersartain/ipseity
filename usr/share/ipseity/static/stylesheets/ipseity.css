@@ -95,65 +95,69 @@ body > div#content > div img {
   left: 5px;
 }
 /* line 120, ../sass/ipseity.scss */
-body > div#content > div h2 {
+body > div#content > div h2, body > div#content > div h3 {
   margin: 0 0 0 90px;
 }
 /* line 124, ../sass/ipseity.scss */
+body > div#content > div h3 {
+  font-size: 0.7rem;
+}
+/* line 128, ../sass/ipseity.scss */
 body > div#content > div a.delete {
   position: absolute;
   top: 64px;
 }
-/* line 129, ../sass/ipseity.scss */
+/* line 133, ../sass/ipseity.scss */
 body > div#content > div a.delete, body > div#content > div a.unlink {
   background: #eab7b7;
   border: 1px solid #eab7b7;
 }
-/* line 132, ../sass/ipseity.scss */
+/* line 136, ../sass/ipseity.scss */
 body > div#content > div a.delete:hover, body > div#content > div a.unlink:hover {
   background: #dc8c8c;
   border: 1px solid gray;
 }
-/* line 138, ../sass/ipseity.scss */
+/* line 142, ../sass/ipseity.scss */
 body > div#content > div a.link {
   background: #a9d49f;
   border: 1px solid #a9d49f;
 }
-/* line 141, ../sass/ipseity.scss */
+/* line 145, ../sass/ipseity.scss */
 body > div#content > div a.link:hover {
   background: #53a93f;
   border: 1px solid gray;
 }
-/* line 147, ../sass/ipseity.scss */
+/* line 151, ../sass/ipseity.scss */
 body > div#content > div ul {
   list-style-type: none;
   margin-left: 90px;
 }
-/* line 150, ../sass/ipseity.scss */
+/* line 154, ../sass/ipseity.scss */
 body > div#content > div ul li {
   margin: 12px 8px 12px 0px;
 }
 
-/* line 158, ../sass/ipseity.scss */
+/* line 162, ../sass/ipseity.scss */
 div.logged_out {
   color: #d0d0d0;
 }
-/* line 160, ../sass/ipseity.scss */
+/* line 164, ../sass/ipseity.scss */
 div.logged_out img {
   opacity: 0.3;
 }
 
-/* line 165, ../sass/ipseity.scss */
+/* line 169, ../sass/ipseity.scss */
 div#add-new-person {
   background-color: #f5f5f5;
 }
-/* line 167, ../sass/ipseity.scss */
+/* line 171, ../sass/ipseity.scss */
 div#add-new-person * {
   margin-left: 0px;
 }
 
 @media only screen and (min-width : 768px) {
   /* Styles */
-  /* line 175, ../sass/ipseity.scss */
+  /* line 179, ../sass/ipseity.scss */
   body > div#content > div {
     width: 47%;
     float: left;
@@ -161,7 +165,7 @@ div#add-new-person * {
 }
 @media only screen and (min-width : 1382px) {
   /* Styles */
-  /* line 183, ../sass/ipseity.scss */
+  /* line 187, ../sass/ipseity.scss */
   body > div#content > div {
     width: 31%;
     float: left;

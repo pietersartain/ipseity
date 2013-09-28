@@ -41,20 +41,12 @@ class NFCInterface:
   def green(self, state):
     GPIO.output(15,state)
 
-  def blink(self, id, initial=0):
-    GPIO.output(id, initial)
-    sleep(0.2)
-    GPIO.output(id, not initial)
-    sleep(0.2)
-    GPIO.output(id, initial)
-    sleep(0.2)
-    GPIO.output(id, not initial)
-    sleep(0.2)
-    GPIO.output(id, initial)
-    sleep(0.2)
-    GPIO.output(id, not initial)
-    sleep(0.2)
-
+  def blink(self, id, number, initial=0):
+    for x in range(0,number):
+      GPIO.output(id, initial)
+      sleep(0.2)
+      GPIO.output(id, not initial)
+      sleep(0.2)
 
   def start(self):
     self.logger.info('Starting NFCInterface ...')
@@ -95,12 +87,12 @@ class NFCInterface:
           self.writing = False
           self.logger.info('Success beep.')
           self.red(0)
-          self.blink(15,0)
+          self.blink(15,3,0)
 
         else:
           self.logger.info("Failure beep.")
           self.green(0)
-          self.blink(12,0)
+          self.blink(12,3,0)
   
       else:
         # If we're not in writing mode, we're in default reading mode
@@ -110,10 +102,15 @@ class NFCInterface:
         self.mifare_auth(uuid, 0x04)
         response_B = self.mifare_read(0x05)
 
-        if (self.db.check_hash(uuid, response_A, response_B)):
-          self.db.toggle_status(uuid)
-          self.logger.info("Success beep.")
-          self.green(1)
+        user_id = self.db.check_hash(uuid, response_A, response_B)
+        if (user_id):
+          logged_in = self.db.toggle_status(user_id) # 1 in, 0 out
+          if (logged_in):
+            self.logger.info("Success in beep.")
+            self.green(1)
+          else:
+            self.logger.info("Success out beep.")
+            self.blink(15,2,1)
         else:
           self.logger.info("Failure beep.")
           self.red(1)

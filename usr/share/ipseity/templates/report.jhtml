@@ -1,0 +1,63 @@
+{% extends "index.jhtml" %}
+{% block title %}Report{% endblock %}
+{% block head %}
+  {{ super() }}
+{% endblock %}
+{% block content %}
+
+<h1>Report</h1>
+
+{#   total duration in use, number of individual visits #}
+{#   average duration, average visits per user #}
+<h2>Overview Stats</h2>
+<table>
+  <tr>
+    <th>Duration</th>
+    <td>{{ overview.duration }}</td>
+  </tr>
+  <tr>
+    <th>Visits</th>
+    <td>{{ overview.visits }}</td>
+  </tr>
+  <tr>
+    <th>Av. visits per person</th>
+    <td>{{ overview.av_visits_per_user }}</td>
+  </tr>
+  <tr>
+    <th>Av. duration per person</th>
+    <td>{{ overview.av_duration_per_user }}</td>
+  </tr>
+</table>
+
+{#   per-person in, out, durations, number of visits, average duration #}
+<h2>Per-Person</h2>
+<table id="perperson">
+
+<tr>
+  <th>Person</th>
+  <th>In</th>
+  <th>Out</th>
+  <th>Duration</th>
+  <th>Visits</th>
+  <th>Average Duration</th>
+</tr>
+
+{% for name in people %}
+
+<tr>
+  <td>{{ name }}</td>
+  <td>{{ people[name].in }}</td>
+  <td>{{ people[name].out }}</td>
+  <td>{{ people[name].duration }}</td>
+  <td>{{ people[name].visits }}</td>
+  <td>{{ people[name].average_duration }}</td>
+</tr>
+
+{% endfor %}
+
+</table>
+
+{#   time heat map of visits (or graph of usage by body count) #}
+{#   most popular times, least popular times #}
+
+{% endblock %}

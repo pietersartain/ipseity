@@ -70,8 +70,6 @@ def get_full_people():
   people_list = []
 
   for user_record in user_records:
-    person_record = dict()
-    # person_record['details'] = user_record
 
     card_records = db_helpers.query_db('select * from cards where user_id = ?',
       (user_record['user_id'],) )

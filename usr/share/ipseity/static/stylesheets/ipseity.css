@@ -51,32 +51,29 @@ body nav {
 body nav li {
   list-style-type: none;
   margin-right: 0.5em;
+  display: inline-block;
 }
-/* line 80, ../sass/ipseity.scss */
+/* line 81, ../sass/ipseity.scss */
 body nav ul {
   margin: 0px;
   padding: 8px;
 }
-/* line 83, ../sass/ipseity.scss */
-body nav ul li {
-  display: inline-block;
-}
-/* line 88, ../sass/ipseity.scss */
-body nav > li {
+/* line 86, ../sass/ipseity.scss */
+body nav ul.admin {
   position: absolute;
-  top: 8px;
+  top: 0px;
   right: 0px;
 }
-/* line 94, ../sass/ipseity.scss */
+/* line 92, ../sass/ipseity.scss */
 body nav a {
   background: #484848;
   border: 1px solid #484848;
 }
-/* line 97, ../sass/ipseity.scss */
+/* line 95, ../sass/ipseity.scss */
 body nav a:hover {
   background: #686868;
 }
-/* line 105, ../sass/ipseity.scss */
+/* line 102, ../sass/ipseity.scss */
 body > div#content > div {
   border: 1px solid #d8d8d8;
   background-color: white;
@@ -88,76 +85,90 @@ body > div#content > div {
   position: relative;
   min-height: 75px;
 }
-/* line 114, ../sass/ipseity.scss */
+/* line 111, ../sass/ipseity.scss */
 body > div#content > div img {
   position: absolute;
   top: 5px;
   left: 5px;
 }
-/* line 120, ../sass/ipseity.scss */
+/* line 117, ../sass/ipseity.scss */
 body > div#content > div h2, body > div#content > div h3 {
   margin: 0 0 0 90px;
 }
-/* line 124, ../sass/ipseity.scss */
+/* line 121, ../sass/ipseity.scss */
 body > div#content > div h3 {
   font-size: 0.7rem;
 }
-/* line 128, ../sass/ipseity.scss */
+/* line 125, ../sass/ipseity.scss */
 body > div#content > div a.delete {
   position: absolute;
   top: 64px;
 }
-/* line 133, ../sass/ipseity.scss */
+/* line 130, ../sass/ipseity.scss */
 body > div#content > div a.delete, body > div#content > div a.unlink {
   background: #eab7b7;
   border: 1px solid #eab7b7;
 }
-/* line 136, ../sass/ipseity.scss */
+/* line 133, ../sass/ipseity.scss */
 body > div#content > div a.delete:hover, body > div#content > div a.unlink:hover {
   background: #dc8c8c;
   border: 1px solid gray;
 }
-/* line 142, ../sass/ipseity.scss */
+/* line 139, ../sass/ipseity.scss */
 body > div#content > div a.link {
   background: #a9d49f;
   border: 1px solid #a9d49f;
 }
-/* line 145, ../sass/ipseity.scss */
+/* line 142, ../sass/ipseity.scss */
 body > div#content > div a.link:hover {
   background: #53a93f;
   border: 1px solid gray;
 }
-/* line 151, ../sass/ipseity.scss */
+/* line 148, ../sass/ipseity.scss */
 body > div#content > div ul {
   list-style-type: none;
   margin-left: 90px;
 }
-/* line 154, ../sass/ipseity.scss */
+/* line 151, ../sass/ipseity.scss */
 body > div#content > div ul li {
   margin: 12px 8px 12px 0px;
 }
-
-/* line 162, ../sass/ipseity.scss */
-div.logged_out {
+/* line 156, ../sass/ipseity.scss */
+body > div#content > div.logged_out {
   color: #d0d0d0;
 }
-/* line 164, ../sass/ipseity.scss */
-div.logged_out img {
+/* line 158, ../sass/ipseity.scss */
+body > div#content > div.logged_out img {
   opacity: 0.3;
 }
-
-/* line 169, ../sass/ipseity.scss */
-div#add-new-person {
+/* line 163, ../sass/ipseity.scss */
+body > div#content > div#add-new-person {
   background-color: #f5f5f5;
 }
-/* line 171, ../sass/ipseity.scss */
-div#add-new-person * {
+/* line 165, ../sass/ipseity.scss */
+body > div#content > div#add-new-person * {
   margin-left: 0px;
+}
+/* line 172, ../sass/ipseity.scss */
+body table {
+  width: 75%;
+  margin: auto;
+  border-collapse: collapse;
+}
+/* line 176, ../sass/ipseity.scss */
+body table th {
+  background: #e5e5e5;
+  border: 1px solid #d8d8d8;
+}
+/* line 180, ../sass/ipseity.scss */
+body table td {
+  background: white;
+  border: 1px solid #d8d8d8;
 }
 
 @media only screen and (min-width : 768px) {
   /* Styles */
-  /* line 179, ../sass/ipseity.scss */
+  /* line 191, ../sass/ipseity.scss */
   body > div#content > div {
     width: 47%;
     float: left;
@@ -165,7 +176,7 @@ div#add-new-person * {
 }
 @media only screen and (min-width : 1382px) {
   /* Styles */
-  /* line 187, ../sass/ipseity.scss */
+  /* line 199, ../sass/ipseity.scss */
   body > div#content > div {
     width: 31%;
     float: left;

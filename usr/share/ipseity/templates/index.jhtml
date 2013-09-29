@@ -24,13 +24,18 @@
   </head>
   <body>
     <nav>
-        <ul>
+        <ul class="people">
             <li><a href="/people/in">In</a></li>
             <li><a href="/people/out">Out</a></li>
             <li><a href="/people/all">All</a></li>
         </ul>
         
-        <li><a href="/people/edit">Edit</a></li>
+        <ul class="admin">
+            <li><a href="/report/overview/0/0">Report</a></li>
+            <li><a href="/report/csv/0/0">CSV</a></li>
+            <li><a href="/people/edit">Edit</a></li>
+        </ul>
+
     </nav>
     {% block content %}{% endblock %}
   </body>

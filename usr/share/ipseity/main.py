@@ -5,6 +5,8 @@ import sqlite3 # Binary
 import socket
 import traceback
 import hashlib
+import time
+import calendar
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Support functions
@@ -77,26 +79,123 @@ def report_overview(s_from, s_to):
 #                         q.event_when) as col_b \
 #     FROM attendance as q WHERE q.user_id NOT NULL \
 #     ORDER BY q.user_id ASC, q.event_when ASC );"
-  #events = db_helpers.query_db("select event_when, u.name from attendance as a join users as u on u.user_id = a.user_id between ... and ...")
+  times = parse_times(s_from, s_to)
+  t_from = times[0]
+  t_to = times[1]
+  events = get_events(t_from, t_to)
 
   # Convert events array into:
   #   per-person in, out, durations, number of visits, average duration
+  people_list = dict()
   #   total duration in use, number of individual visits
   #   average duration, average visits per user
-  #   most popular times, least popular times
+  overview_stats = {'duration':0, 'visits':0, 'av_duration_per_user':0, 'av_visits_per_user':0}
   #   time heat map of visits (or graph of usage by body count)
-  return ""
+  #   most popular times, least popular times
 
-# @app.route("/report/csv/<str:s_from>/<str:s_to>")
-# def report_csv(s_from, s_to):
-# SELECT u.name, a.logged_in, a.event_when, strftime('%s',event_when)
-# FROM attendance as a 
-# join users as u on u.user_id = a.user_id
-# WHERE a.event_when BETWEEN '2013-09-27 20:33:46' and '2013-09-27 20:33:49'
-# order by a.user_id desc, a.event_when asc;
+  last_in = 0
+  last_out = 0
 
-#AND strftime('%s', a.event_when) < strftime('%s','now')
+  for event in events:
+    if (event['name'] not in people_list):
+      people_list[event['name']] = {'in':0, 'out':0, 'duration':0, 'visits':0, 'average_duration':0}
 
+    if (event['logged_in'] == 1):
+      people_list[event['name']]['in'] += 1
+      last_in = event['event_when']
+
+    if (event['logged_in'] == 0):
+      people_list[event['name']]['out'] += 1
+      last_out = event['event_when']
+      if (last_in == 0):
+        last_in = int(t_from)
+
+      duration = last_out - last_in
+
+      if (duration > 0):
+        #
+        people_list[event['name']]['duration'] += duration
+        people_list[event['name']]['visits'] += 1
+        people_list[event['name']]['average_duration'] = people_list[event['name']]['duration'] / people_list[event['name']]['visits']
+        #
+        overview_stats['duration'] += duration
+        overview_stats['visits'] += 1
+        #
+
+  overview_stats['av_visits_per_user'] = overview_stats['visits'] / len(people_list)
+  overview_stats['av_duration_per_user'] = overview_stats['duration'] / len(people_list)
+
+  return render_template('report.jhtml', people=people_list, overview=overview_stats)
+
+# From/To are YYYYMMDD formatted strings
+@app.route("/report/csv/<s_from>/<s_to>")
+def report_csv(s_from, s_to):
+
+  times = parse_times(s_from, s_to)
+  t_from = times[0]
+  t_to = times[1]
+  events = get_events(t_from, t_to)
+
+#  s_from = time.strptime(t_from, "%s")
+#  s_to   = time.strptime(t_to,   "%s")
+
+  file_name = '/tmp/%s_%s.csv' % (t_from, t_to)
+  f = open(file_name,'w')
+  for event in events:
+    f.write(event['line'] + "\n")
+  f.close()
+
+  return send_file(file_name, as_attachment=True)
+
+def parse_times(s_from, s_to):
+  ltime = time.localtime()
+  monthrange = calendar.monthrange(ltime[0], ltime[1])
+
+  if (s_from == "0"):
+    s_from = '%s%s01' % (ltime[0], ltime[1])
+
+  if (s_to == "0"):
+    s_to = '%s%s%s' % (ltime[0], ltime[1], monthrange[1])
+
+  t_from = time.strftime('%s', time.strptime(s_from, "%Y%m%d"))
+  t_to   = time.strftime('%s', time.strptime(s_to,   "%Y%m%d"))
+
+  return (t_from, t_to)
+
+def get_events(t_from, t_to):
+  # ltime = time.localtime()
+  # monthrange = calendar.monthrange(ltime[0], ltime[1])
+
+  # if (s_from == "0"):
+  #   s_from = '%s%s01' % (ltime[0], ltime[1])
+
+  # if (s_to == "0"):
+  #   s_to = '%s%s%s' % (ltime[0], ltime[1], monthrange[1])
+
+  # s_from = time.strftime('%s', time.strptime(s_from, "%Y%m%d"))
+  # s_to   = time.strftime('%s', time.strptime(s_to,   "%Y%m%d"))
+
+  events = db_helpers.query_db("""
+    SELECT u.name || ',' || a.event_when || ',' || a.logged_in AS line,
+    u.name AS name, a.event_when AS event_when, a.logged_in AS logged_in
+    FROM attendance AS a 
+    JOIN users AS u 
+    ON u.user_id = a.user_id
+    WHERE event_when BETWEEN ? AND ?
+    ORDER BY name ASC, event_when ASC
+    """, (t_from, t_to))
+
+# """
+#     SELECT u.name || ',' || a.event_when || ',' || a.logged_in AS line,
+#     u.name AS name, a.event_when AS event_when, a.logged_in AS logged_in
+#     FROM attendance AS a 
+#     JOIN users AS u 
+#     ON u.user_id = a.user_id
+#     WHERE event_when BETWEEN 1377993600 AND 1380499200
+#     ORDER BY name asc, event_when asc
+# """
+
+  return events
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # People helper functions
@@ -124,6 +223,7 @@ def add_person():
 def remove_person(user_id):
   db_helpers.run_db('delete from cards where user_id = ?',(user_id,) )
   db_helpers.run_db('delete from users where user_id = ?',(user_id,) )
+  db_helpers.run_db('delete from attendance where user_id = ?',(user_id,) )
   return redirect('/people/edit')
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

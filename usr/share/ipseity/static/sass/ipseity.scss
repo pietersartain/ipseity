@@ -29,7 +29,7 @@
   border-radius: $radius;
 }
 
-//$page-background: #E5E5E5; // Google
+$page-alt-background: #E5E5E5; // Google
 $page-background: #F6F6EE;
 $card-border: #D8D8D8;
 $card-background: #FFFFFF;
@@ -68,26 +68,24 @@ body {
     }
   }
 
-
+  // Top navigation bar
   nav {
     background: $menu-background;
 
     li {
       list-style-type: none;
       margin-right: 0.5em;
+      display: inline-block;
     }
 
     ul {
       margin: 0px;
       padding: 8px;
-      li {
-        display: inline-block;
-      }
     }
 
-    & > li {
+    ul.admin {
       position: absolute;
-      top: 8px;
+      top: 0px;
       right: 0px;
     }
 
@@ -98,10 +96,9 @@ body {
         background: $menu-link-bg-hover;
       }
     }
+  } // Top navigation bar
 
-  }
-
-  // Cards
+  // People cards
   & > div#content > div {
     border: 1px solid $card-border;
     background-color: $card-background;
@@ -156,21 +153,36 @@ body {
       }
     }
 
-  }
-}
+    &.logged_out {
+      color: $logged-out-text;
+      img {
+        opacity: 0.3;
+      }
+    }
 
-div.logged_out {
-  color: $logged-out-text;
-  img {
-    opacity: 0.3;
-  }
-}
+    &#add-new-person {
+      background-color: $add-background;
+      * {
+        margin-left: 0px;
+      }
+    }
 
-div#add-new-person {
-  background-color: $add-background;
-  * {
-    margin-left: 0px;
+  } // People cards
+
+  table {
+    width: 75%;
+    margin: auto;
+    border-collapse: collapse;
+    th {
+      background: $page-alt-background;
+      border: 1px solid $card-border;
+    }
+    td {
+      background: $card-background;
+      border: 1px solid $card-border;
+    }
   }
+
 }
 
 

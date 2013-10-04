@@ -31,7 +31,6 @@
         </ul>
         
         <ul class="admin">
-            <li><a href="/report/overview/0/0">Report</a></li>
             <li><a href="/report/csv/0/0">CSV</a></li>
             <li><a href="/people/edit">Edit</a></li>
         </ul>

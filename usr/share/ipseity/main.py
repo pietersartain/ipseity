@@ -149,13 +149,15 @@ def report_csv(s_from, s_to):
 
 def parse_times(s_from, s_to):
   ltime = time.localtime()
-  monthrange = calendar.monthrange(ltime[0], ltime[1])
 
+  # If the from or to times are set to 0,
+  # treat them as if they were last month.
   if (s_from == "0"):
-    s_from = '%s%s01' % (ltime[0], ltime[1])
+    s_from = '%s%s01' % (ltime[0], ltime[1]-1)
 
   if (s_to == "0"):
-    s_to = '%s%s%s' % (ltime[0], ltime[1], monthrange[1])
+    monthrange = calendar.monthrange(ltime[0], ltime[1]-1)
+    s_to = '%s%s%s' % (ltime[0], ltime[1]-1, monthrange[1])
 
   t_from = time.strftime('%s', time.strptime(s_from, "%Y%m%d"))
   t_to   = time.strftime('%s', time.strptime(s_to,   "%Y%m%d"))

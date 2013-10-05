@@ -69,16 +69,6 @@ def people_edit():
 
 @app.route("/report/overview/<s_from>/<s_to>")
 def report_overview(s_from, s_to):
-# "SELECT col_b as clock_in, col_a as clock_out, strftime('%s', col_a)-strftime('%s', col_b) \
-#   FROM (  \
-#   SELECT q.user_id as user_id, q.event_when as col_a, \
-#     coalesce((select r.event_when from attendance as r \
-#                         where r.user_id = q.user_id \
-#                         and r.event_when < q.event_when \
-#                         order by r.event_when DESC limit 1), \
-#                         q.event_when) as col_b \
-#     FROM attendance as q WHERE q.user_id NOT NULL \
-#     ORDER BY q.user_id ASC, q.event_when ASC );"
   times = parse_times(s_from, s_to)
   t_from = times[0]
   t_to = times[1]
@@ -136,10 +126,7 @@ def report_csv(s_from, s_to):
   t_to = times[1]
   events = get_events(t_from, t_to)
 
-#  s_from = time.strptime(t_from, "%s")
-#  s_to   = time.strptime(t_to,   "%s")
-
-  file_name = '/tmp/%s_%s.csv' % (t_from, t_to)
+  file_name = '/tmp/%s_%s.csv' % (times[2], times[3])
   f = open(file_name,'w')
   for event in events:
     f.write(event['line'] + "\n")
@@ -153,32 +140,22 @@ def parse_times(s_from, s_to):
   # If the from or to times are set to 0,
   # treat them as if they were last month.
   if (s_from == "0"):
-    s_from = '%s%s01' % (ltime[0], ltime[1]-1)
+    m = ltime[1]-1
+    s_from = '%s%s01' % (ltime[0], m)
 
   if (s_to == "0"):
-    monthrange = calendar.monthrange(ltime[0], ltime[1]-1)
-    s_to = '%s%s%s' % (ltime[0], ltime[1]-1, monthrange[1])
+    m = ltime[1]-1
+    monthrange = calendar.monthrange(ltime[0], m)
+    s_to = '%s%s%s' % (ltime[0], m, monthrange[1])
 
   t_from = time.strftime('%s', time.strptime(s_from, "%Y%m%d"))
   t_to   = time.strftime('%s', time.strptime(s_to,   "%Y%m%d"))
 
-  return (t_from, t_to)
+  return (t_from, t_to, s_from, s_to)
 
 def get_events(t_from, t_to):
-  # ltime = time.localtime()
-  # monthrange = calendar.monthrange(ltime[0], ltime[1])
-
-  # if (s_from == "0"):
-  #   s_from = '%s%s01' % (ltime[0], ltime[1])
-
-  # if (s_to == "0"):
-  #   s_to = '%s%s%s' % (ltime[0], ltime[1], monthrange[1])
-
-  # s_from = time.strftime('%s', time.strptime(s_from, "%Y%m%d"))
-  # s_to   = time.strftime('%s', time.strptime(s_to,   "%Y%m%d"))
-
   events = db_helpers.query_db("""
-    SELECT u.name || ',' || a.event_when || ',' || a.logged_in AS line,
+    SELECT u.name || ',' || a.event_when || ',' || datetime(a.event_when,'unixepoch') || ',' || a.logged_in AS line,
     u.name AS name, a.event_when AS event_when, a.logged_in AS logged_in
     FROM attendance AS a 
     JOIN users AS u 
@@ -186,16 +163,6 @@ def get_events(t_from, t_to):
     WHERE event_when BETWEEN ? AND ?
     ORDER BY name ASC, event_when ASC
     """, (t_from, t_to))
-
-# """
-#     SELECT u.name || ',' || a.event_when || ',' || a.logged_in AS line,
-#     u.name AS name, a.event_when AS event_when, a.logged_in AS logged_in
-#     FROM attendance AS a 
-#     JOIN users AS u 
-#     ON u.user_id = a.user_id
-#     WHERE event_when BETWEEN 1377993600 AND 1380499200
-#     ORDER BY name asc, event_when asc
-# """
 
   return events
 

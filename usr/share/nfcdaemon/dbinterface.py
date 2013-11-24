@@ -76,7 +76,7 @@ class DBInterface:
     new_logged_in_state = 1 - user_info["logged_in"]
 
     self.db.execute("UPDATE users SET logged_in = ? WHERE user_id = ?;", (new_logged_in_state, user_id,))
-    self.db.execute("INSERT INTO attendance(logged_in, user_id, event_when) VALUES(?, ?, strftime('%s','now'));", (new_logged_in_state, user_id))
+    self.db.execute("INSERT INTO attendance(logged_in, name, event_when) VALUES(?, ?, strftime('%s','now'));", (new_logged_in_state, user_info['name']))
     self.db.commit()
 
     return new_logged_in_state

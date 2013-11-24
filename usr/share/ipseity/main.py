@@ -155,11 +155,8 @@ def parse_times(s_from, s_to):
 
 def get_events(t_from, t_to):
   events = db_helpers.query_db("""
-    SELECT u.name || ',' || a.event_when || ',' || datetime(a.event_when,'unixepoch') || ',' || a.logged_in AS line,
-    u.name AS name, a.event_when AS event_when, a.logged_in AS logged_in
-    FROM attendance AS a 
-    JOIN users AS u 
-    ON u.user_id = a.user_id
+    SELECT name || ',' || event_when || ',' || datetime(event_when,'unixepoch') || ',' || logged_in AS line,
+    name, event_when, logged_in FROM attendance
     WHERE event_when BETWEEN ? AND ?
     ORDER BY name ASC, event_when ASC
     """, (t_from, t_to))
@@ -192,7 +189,6 @@ def add_person():
 def remove_person(user_id):
   db_helpers.run_db('delete from cards where user_id = ?',(user_id,) )
   db_helpers.run_db('delete from users where user_id = ?',(user_id,) )
-  db_helpers.run_db('delete from attendance where user_id = ?',(user_id,) )
   return redirect('/people/edit')
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

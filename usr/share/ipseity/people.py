@@ -2,29 +2,21 @@ from ipseity import app, db_helpers
 from flask import url_for
 import time
 
+# This is the People model
+
 def get_all():
   return get_people(get_sql())
 
 def get_in():
-  sql = get_sql('WHERE u.logged_in = 1')
+  sql = get_sql('WHERE logged_in = 1')
   return get_people(sql)
 
 def get_out():
-  sql = get_sql('WHERE u.logged_in = 0')
+  sql = get_sql('WHERE logged_in = 0')
   return get_people(sql)
 
 def get_sql(where = ""):
-  return """
-    SELECT u.user_id AS user_id, 
-      MAX(a.event_when) AS event_when, 
-      u.name AS name,
-      u.logged_in AS logged_in,
-      u.image AS image
-    FROM attendance AS a
-    JOIN users AS u ON a.user_id = u.user_id
-    """ + where + """
-    GROUP BY a.user_id
-  """
+  return "SELECT * FROM users " + where
 
 # Now this function really does need optimising. omgooses.
 def get_people(sql):

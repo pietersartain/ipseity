@@ -1,0 +1,2 @@
+# Log all ipseity users out at 10pm every day
+00 10 * * * python /support/everyone-out.py

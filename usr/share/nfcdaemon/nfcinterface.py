@@ -82,6 +82,9 @@ class NFCInterface:
 
         #binprint.print_r_t(self.write_data, "Data to be written")
 
+        # Need a check here to determine if the card has written correctly,
+        # then we can trust the success check below.
+
         if (success):
           self.db.update_card(card_id, self.write_data[0])
           self.writing = False
@@ -119,6 +122,11 @@ class NFCInterface:
       self.logger.info("LED reset")
       self.green(0)
       self.red(0)
+
+      # Delay the loop reset for a bit of time
+      # to prevent someone from leaning on the
+      # login/logout button.
+      sleep(3)
 
   def stop(self):
     self.logger.info('Stopping NFCInterface ...')

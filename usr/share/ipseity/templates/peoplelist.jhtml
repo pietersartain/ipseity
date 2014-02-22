@@ -1,7 +1,10 @@
 {% for person in people %}
-<div class={% if person.logged_in %}'logged_in'{% else %}'logged_out'{% endif %} >
+<div class="{% if person.logged_in %}logged_in{% else %}logged_out{% endif %}" >
   <img src="{{ person.image_url }}" height="64" />
   <h2>{{ person.name }}</h2>
   <h3>{{ person.event_when }}</h3>
+  <form method="post" action="/people/{{ person.user_id }}/toggle">
+    <input type="submit" value="Log {% if person.logged_in %}out{% else %}in{% endif %}">
+  </form>
 </div>
 {% endfor %}

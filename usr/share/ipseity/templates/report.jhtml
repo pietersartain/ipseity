@@ -6,6 +6,7 @@
 {% block content %}
 
 <h1>Report</h1>
+<span>{{ dates.start }} - {{ dates.end }}</span>
 
 {#   total duration in use, number of individual visits #}
 {#   average duration, average visits per user #}

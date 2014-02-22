@@ -16,7 +16,7 @@ def get_out():
   return get_people(sql)
 
 def get_sql(where = ""):
-  return "SELECT * FROM users " + where
+  return "SELECT * FROM users " + where + " ORDER BY name ASC"
 
 # Now this function really does need optimising. omgooses.
 def get_people(sql):
@@ -58,7 +58,7 @@ def get_people(sql):
 # This could mostly be done with a single SQL, but it's more hard work
 # than it needs to be, and this is plenty efficient enough for now.
 def get_full_people():
-  user_records = db_helpers.query_db('select * from users')
+  user_records = db_helpers.query_db('select * from users order by name asc')
   people_list = []
 
   for user_record in user_records:
@@ -88,3 +88,12 @@ def get_full_people():
 
     people_list.append(person_record)
   return people_list
+
+def toggle_logged_in_state(user_id):
+  user_info = db_helpers.query_db("SELECT * FROM users WHERE user_id = ?", (user_id,), True)
+  new_logged_in_state = 1 - user_info["logged_in"]
+
+  db = db_helpers.get_db()
+  db.execute("UPDATE users SET logged_in = ?, event_when = strftime('%s','now') WHERE user_id = ?;", (new_logged_in_state, user_id,))
+  db.execute("INSERT INTO attendance(logged_in, name, event_when) VALUES(?, ?, strftime('%s','now'));", (new_logged_in_state, user_info['name']))
+  db.commit()

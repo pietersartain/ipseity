@@ -7,6 +7,7 @@ import traceback
 import hashlib
 import time
 import calendar
+import datetime
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Support functions
@@ -24,7 +25,7 @@ def get_people(logged_in = None):
   if (logged_in == None):
     people_list = people.get_all()
 
-  if (request.args.get('ajax')):
+  if (request.is_xhr):
     return render_template('peoplelist.jhtml', people=people_list)
   else:
     return render_template('people.jhtml', people=people_list)
@@ -86,6 +87,7 @@ def report_overview(s_from, s_to):
   last_in = 0
   last_out = 0
 
+  # Spin through the events building up the stats
   for event in events:
     if (event['name'] not in people_list):
       people_list[event['name']] = {'in':0, 'out':0, 'duration':0, 'visits':0, 'average_duration':0}
@@ -112,10 +114,28 @@ def report_overview(s_from, s_to):
         overview_stats['visits'] += 1
         #
 
-  overview_stats['av_visits_per_user'] = overview_stats['visits'] / len(people_list)
-  overview_stats['av_duration_per_user'] = overview_stats['duration'] / len(people_list)
+  # Now convert stats to normal units (rather than just seconds)
+  no_of_people = len(people_list)
 
-  return render_template('report.jhtml', people=people_list, overview=overview_stats)
+  overview_stats['duration'] = str(datetime.timedelta(seconds=overview_stats['duration']))
+  overview_stats['av_duration_per_user'] = str(datetime.timedelta(seconds=overview_stats['av_duration_per_user']))
+
+  for person in people_list:
+    person['duration'] = str(datetime.timedelta(seconds=person['duration']))
+    person['average_duration'] = str(datetime.timedelta(seconds=person['average_duration']))
+
+  dates = dict()
+  dates['start'] = time.strftime('%d/%m/%Y', time.localtime(float(t_from)))
+  dates['end']   = time.strftime('%d/%m/%Y', time.localtime(float(t_to)))
+
+  if (no_of_people > 0):
+    overview_stats['av_visits_per_user'] = overview_stats['visits'] / no_of_people
+    overview_stats['av_duration_per_user'] = str(datetime.timedelta(seconds=overview_stats['duration'] / no_of_people))
+  else:
+    overview_stats['av_visits_per_user'] = 0
+    overview_stats['av_duration_per_user'] = str(datetime.timedelta(seconds=0))
+
+  return render_template('report.jhtml', people=people_list, overview=overview_stats, dates=dates)
 
 # From/To are YYYYMMDD formatted strings
 @app.route("/report/csv/<s_from>/<s_to>")
@@ -134,6 +154,15 @@ def report_csv(s_from, s_to):
 
   return send_file(file_name, as_attachment=True)
 
+# Input:
+#   s_from    a YYYYMMDD string or 0
+#   s_to      also a YYYYMMDD string or a 0
+#
+# Return:
+#   t_from    unix timestamp
+#   t_to      unix timestamp
+#   s_from    a YYYYMMDD string
+#   s_from    a YYYYMMDD string
 def parse_times(s_from, s_to):
   ltime = time.localtime()
 
@@ -175,6 +204,16 @@ def get_image(user_id):
   response = make_response(img)
   response.headers['Content-Type'] = 'image/jpeg'
   return response
+
+# Log a person in/out
+@app.route("/people/<int:user_id>/toggle", methods=["POST"])
+def person_set(user_id):
+  people.toggle_logged_in_state(user_id)
+
+  if (request.is_xhr):
+    return '{}'
+  else:
+    return redirect('/people/all')
 
 # Add a new person to the DB
 @app.route("/people/new", methods=['POST'])

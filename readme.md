@@ -17,6 +17,7 @@ The instructions below assume you have a RasPi freshly installed with Raspbian (
 
 Update /etc/wpa_supplicant/wpa_supplicant.conf
 
+```
 ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
 #update_config=1
 
@@ -29,16 +30,20 @@ pairwise=CCMP TKIP
 group=CCMP TKIP
 psk="a959df7d1bc4"
 }
+```
 
 Update /etc/network/interfaces, replace wlan0 info with the following:
 
+```
 allow-hotplug wlan0
 auto wlan0
 iface wlan0 inet dhcp
 pre-up wpa_supplicant -Dwext -i wlan0 -c /etc/wpa_supplicant/wpa_supplicant.conf -B
+```
 
  * Sort out the i2c
 
+```
 sudo vim /etc/modules
 +i2c-bcm2708
 +i2c-dev
@@ -46,6 +51,7 @@ sudo vim /etc/modules
 sudo vim /etc/modprobe.d/raspi-blacklist.conf
 -blacklist spi-bcm2708
 -blacklist i2c-bcm2708
+```
 
 ## Build & install dependancies on Raspbian
 
@@ -56,10 +62,11 @@ Use the setup-pi-python.sh script to:
 
 ## Optional / probably not used
  * Add /etc/apt/sources.list.d/quick2wire.list
+```
 # Quick2Wire Software
 deb http://dist.quick2wire.com/raspbian wheezy main
 deb-src http://dist.quick2wire.com/raspbian wheezy main
-
+```
  * Install quick2wire
  * Install flask with `sudo CFLAGS=-I/usr/local/include/python2.7 pip install flask`
 

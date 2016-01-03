@@ -4,6 +4,22 @@
   {{ super() }}
 {% endblock %}
 {% block content %}
+
+<nav>
+  <ul class="people">
+    <li><a href="/people/in">In</a></li>
+    <li><a href="/people/out">Out</a></li>
+    <li><a href="/people/all">All</a></li>
+  </ul>
+
+  <ul class="admin">
+    <form method="GET" action="/report/csv"
+    <li><a href="/report/csv/0/0">CSV</a></li>
+    <li><a href="/report/csv/0/0">CSV</a></li>
+  </ul>
+</nav>
+
+
 <h1>People</h1>
 
 <div id="content">

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# What a fucking mess.
+# What a mess.
 sudo -s
 
 # Clobber all the existing system Pythons, and then
@@ -30,8 +30,7 @@ curl -O https://raw.github.com/pypa/pip/master/contrib/get-pip.py
 python get-pip.py
 
 # If we're going to install virtualenv, we should probably do that now.
-#sudo pip install virtualenv
-# Fuck it, we're not using it anyway.
+#sudo pip install virtualenv # Commented out. We're not using it anyway.
 
 # Now we have a pip registered against our python, we can install
 # uWSGI which should hopefully be compiled correctly.

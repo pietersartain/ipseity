@@ -1,0 +1,33 @@
+select 
+(select event_when from attendance where user_id = 1 and logged_in = 1 order by event_when asc)
+(select event_when from attendance where user_id = 1 and logged_in = 0 order by event_when asc)
+
+http://stackoverflow.com/questions/6427672/time-difference-between-query-result-rows-in-sqlite-how-to
+
+SELECT col_b, col_a, strftime('%s', col_a)-strftime('%s', col_b) FROM ( 
+SELECT q.user_id, q.event_when as col_a,
+  coalesce((select r.event_when from attendance as r
+                      where r.user_id = q.user_id
+                      and r.event_when < q.event_when
+                      order by r.event_when DESC limit 1), 
+                      q.event_when) as col_b
+ FROM attendance as q WHERE q.user_id NOT NULL 
+ ORDER BY q.user_id ASC, q.event_when ASC );
+
+SELECT u.name, a.logged_in, a.event_when, strftime('%s',event_when)
+FROM attendance as a 
+join users as u on u.user_id = a.user_id
+WHERE a.event_when BETWEEN '2013-09-27 20:33:46' and '2013-09-27 20:33:49'
+order by a.user_id desc, a.event_when asc;
+
+
+AND strftime('%s', a.event_when) < strftime('%s','now')
+
+
+
+
+data usage estimation:
+
+4 classes per day @ ~15 people per class
+120 events per day
+3600 events per month

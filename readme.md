@@ -7,6 +7,7 @@ Ipseity is a clock-in, clock-out timekeeping app. It was designed to run in the 
 
 This repo is the software part that is designed to run on a Raspberry Pi, coupled to an NFC reader and some LEDs.
 
+# Installation
 The instructions below assume you have a RasPi freshly installed with Raspbian (a circa 2014 version), but nothing else.
 
 ## Prepare the RasPi
@@ -75,3 +76,30 @@ deb-src http://dist.quick2wire.com/raspbian wheezy main
  * Copy the ipseity source directory to the Pi
  * dpkg-buildpackage -rfakeroot -b
  * dpkg -i ipseity_1.0_all.deb
+
+# TODO
+
+ * Fix reporting output (seems broken on live system)
+ * Ability to specifically login/logout people
+ * Configurable auto-logout (Local: auto log out user 5 hours after logging in)
+ * Refactor to share DB code between NFCDaemon and core app
+ * Investigate running nfcdaemon and ipseity as non-root users (Note this may require some fairly heavy rewriting on the nfcdaemon part because of the RPi GPIO things. Look at maybe quick2wire-gpio-admin and switching to that)
+ * Build other deps as proper deb packages. We can use nginx and python3 in the debian/control file, but nearly all the other deps are built from source or pulled in via pip and should probably be turned into packages.
+     * ipseity web interface (python 2.7):
+         * python 2.7.5
+         * uwsgi
+         * flask
+         * sqlite3
+     * nfcdaemon (python 3.2):
+         * sqlite3
+ * Add unit tests (I know, I know. Really should've sorted this first ...)
+
+# Copyright & Licensing
+
+nfcdaemon and ipseity are both original works Copyright 2013-2016 Pieter Sartain, and released under the MIT license. See license.txt for details.
+
+[quick2wire](https://github.com/quick2wire/quick2wire-python-api) included under the MIT license.
+
+[py532lib](https://github.com/HubCityLabs/py532lib) included under the BSD 2 Clause license.
+
+[daemon3x](https://github.com/metachris/python-posix-daemon) included under a (presumed) permissive license.
